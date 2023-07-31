@@ -19,30 +19,65 @@ import { useState } from "react";
 
 function App(props) {
   const [input, setInput] = useState("");
-  const [todo, setTodo] = useState([]);
-  const deleteTask = (taskId) => {
-    setTodo((toDos) => toDos.filter((task) => task.id !== taskId));
+  const [todos, setTodos] = useState([]);
+
+  const deleteTodos = (id) => {
+    const deleteTask = todos.filter((list) => list.id !== id);
+    setTodos(deleteTask);
   };
+
   return (
     <div className="App">
       <div className="card rounded shadow-sm m-5">
         <div className="card-body">
           <h3 className="card-title mb-3">My Todo List</h3>
           <ul className="list-group">
-            {todo.map((item, index) => (
+            {todos.map((item, index) => (
               <li
                 className="list-group-item d-flex justify-content-between align-items-center"
                 key={index}
               >
                 <div>
-                  <button className="btn btn-sm btn-light">
-                    <i className="bi bi-square"></i>
+                  <button
+                    onClick={() => {
+                      const newDone = todos.map((done) => {
+                        if (done.id === item.id) {
+                          const doneTodos = { ...done };
+                          if (done.isCompleted === true) {
+                            doneTodos.isCompleted = false;
+                          } else if (done.isCompleted === false) {
+                            doneTodos.isCompleted = true;
+                          }
+                          return doneTodos;
+                        } else {
+                          return done;
+                        }
+                      });
+                      setTodos(newDone);
+                    }}
+                    className={`btn btn-sm ${
+                      item.isCompleted ? "btn-success" : "btn-light"
+                    }`}
+                  >
+                    <i
+                      className={`bi ${
+                        item.isCompleted ? "bi-check-square" : "bi-square"
+                      }`}
+                    ></i>
                   </button>
-                  <span className="ms-2">{item.text}</span>
+                  {item.isCompleted ? (
+                    <span className="ms-2 text-decoration-line-through">
+                      {item.text}
+                    </span>
+                  ) : (
+                    <span className="ms-2">{item.text}</span>
+                  )}
                 </div>
                 <button
                   className="btn btn-sm btn-danger"
-                  onClick={() => deleteTask(item.id)}
+                  onClick={() => {
+                    deleteTodos(item.id);
+                  }}
                 >
                   <i className="bi bi-trash"></i>
                 </button>
@@ -53,12 +88,13 @@ function App(props) {
                 className="d-flex justify-content-between align-items-center"
                 onSubmit={(event) => {
                   event.preventDefault();
-                  const newTodo = [...todo];
-                  newTodo.push({
-                    id: newTodo.length + 1,
+                  const newTodos = [...todos];
+                  newTodos.push({
+                    id: todos.length + 1,
                     text: input,
+                    isCompleted: false,
                   });
-                  setTodo(newTodo);
+                  setTodos(newTodos);
                   setInput("");
                 }}
               >
