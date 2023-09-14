@@ -21,10 +21,10 @@ function App(props) {
   const [input, setInput] = useState("");
   const [todos, setTodos] = useState([]);
 
-  const deleteTodos = (id) => {
-    const deleteTask = todos.filter((list) => list.id !== id);
-    setTodos(deleteTask);
-  };
+  // const deleteTodos = (id) => {
+  //   const deleteTask = todos.filter((list) => list.id !== id);
+  //   setTodos(deleteTask);
+  // };
 
   return (
     <div className="App">
@@ -76,7 +76,11 @@ function App(props) {
                 <button
                   className="btn btn-sm btn-danger"
                   onClick={() => {
-                    deleteTodos(item.id);
+                    // deleteTodos(item.id);
+                    const deleteTodos = todos.filter(
+                      (del) => del.id !== item.id
+                    );
+                    setTodos(deleteTodos);
                   }}
                 >
                   <i className="bi bi-trash"></i>
@@ -90,7 +94,7 @@ function App(props) {
                   event.preventDefault();
                   const newTodos = [...todos];
                   newTodos.push({
-                    id: todos.length + 1,
+                    id: Math.random,
                     text: input,
                     isCompleted: false,
                   });
